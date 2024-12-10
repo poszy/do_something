@@ -35,3 +35,6 @@ google-services.json
 #emacs
 *~
 *#
+
+#Arch_64
+*.o
