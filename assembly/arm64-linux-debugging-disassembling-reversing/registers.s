@@ -25,3 +25,12 @@
 	//	x1 (before):  00000000000000010000000000000001
 	//	Mask:         00000000000000001111111111111111
 	// 	Result:       00000000000000000000000000000001
+
+	mov  w1, #1              // 1 is copied to the first half of X1 register
+	mov  x1, #1              // full contents of X1 register are replaced with 1
+	adr  x0, a               // copy the location (address) "a" to X0 register
+	ldr  w1, [x0]            // copy the number at the location stored in X0 to
+        			 // the first half of X1 register 
+	Ldr  x1, [x0]            // copy the number at the location stored in X0 to X1
+
+	// ldr and LDR are the same, LDR as well. not case sensitive 
