@@ -53,9 +53,15 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(modus-operandi))
  '(custom-safe-themes
-   '("ff46770c9b4bf10b7cc14d88abff11b627e749057548ac50323712c80e133a87" "d6a51c6b938fd38874a938fa4b8795ff2f1d0ca491f824a88aa6c46d373e36cf" "236b9b9af6ebae43d98b934d27566ddaf9e47bdcb101d945435aeac0e4e9a73d" "3001510be1be4a38508ff07633e97b810c0a52c6fa2f4c7153d22cc7596d9172" toxi-theme))
+   '("d10c58f4a53b7d4760022fdf67734865c290e40ef5dfa597a653e14b810a7d07"
+     "ff46770c9b4bf10b7cc14d88abff11b627e749057548ac50323712c80e133a87"
+     "d6a51c6b938fd38874a938fa4b8795ff2f1d0ca491f824a88aa6c46d373e36cf"
+     "236b9b9af6ebae43d98b934d27566ddaf9e47bdcb101d945435aeac0e4e9a73d"
+     "3001510be1be4a38508ff07633e97b810c0a52c6fa2f4c7153d22cc7596d9172"
+     toxi-theme))
  '(package-selected-packages
-   '(treemacs-magit kotlin-mode magit toxi-theme dracula-theme timu-caribbean-theme bliss-theme ##))
+   '(## bliss-theme dracula-theme flycheck-kotlin kotlin-mode magit
+	timu-caribbean-theme toxi-theme treemacs-magit))
  '(warning-suppress-log-types '((emacs))))
 
 ;; load thene
@@ -186,3 +192,54 @@
 (use-package treemacs-magit
   :after (treemacs magit)
   :ensure t)
+
+
+;; Kotlin Major Mode
+(use-package kotlin-mode
+  :after (lsp-mode dap-mode)
+  :config
+  (require 'dap-kotlin)
+  ;; should probably have been in dap-kotlin instead of lsp-kotlin
+  (setq lsp-kotlin-debug-adapter-path (or (executable-find "kotlin-debug-adapter") ""))
+  :hook
+  (kotlin-mode . lsp))
+
+
+(use-package company
+  :init
+  (global-company-mode)
+
+  :custom
+  ;; set the completion to begin at once
+  (company-idle-delay 0)
+  (company-echo-delay 0)
+  (company-minimum-prefix-length 1)
+
+  :bind
+  ;; trigger company to see a list of choices even when nothing is typed
+  ([(control return)] . company-complete))
+
+
+(use-package lsp-mode
+  :bind
+  ("M-RET" . lsp-execute-code-action))
+
+(use-package lsp-ui
+  :after lsp-mode
+  :custom
+  (lsp-ui-sideline-show-code-actions t)
+  (lsp-ui-doc-position 'at-point))
+
+
+;; Additional helpers using treemacs
+;; (symbols view, errors, dependencies for Java etc.)
+(use-package lsp-treemacs
+  :after lsp-mode
+  :config
+  (lsp-treemacs-sync-mode 1))
+
+;; debugger component (for the few times I need it)
+(use-package dap-mode
+  :after lsp-mode
+  :init
+  (dap-auto-configure-mode))
